@@ -1,6 +1,6 @@
 local cmd = vim.cmd
 local fn = vim.fn
-local opt = vim.o
+local opt = vim.opt
 local g = vim.g
 
 -- <leader> key. Defaults to `\`. Some people prefer space.
@@ -41,8 +41,6 @@ opt.foldenable = true
 opt.history = 2000
 opt.nrformats = 'bin,hex' -- 'octal'
 opt.undofile = true
-opt.splitright = true
-opt.splitbelow = true
 opt.cmdheight = 0
 
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
@@ -140,13 +138,13 @@ opt.list = true
 opt.listchars = { tab = "» ", trail = "·", nbsp = "␣" }
 
 -- Preview substitutions live, as you type!
-vim.opt.inccommand = "split"
+opt.inccommand = "split"
 
 -- Show which line your cursor is on
-vim.opt.cursorline = true
+opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 10
+opt.scrolloff = 10
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -167,7 +165,7 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, { desc = "Open diagn
 vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 
 -- Use `jj` to exit insert mode
-vim.keymap.set("n", "jj", "<Esc>", { desc = "Return to normal mode" })
+vim.keymap.set({"v", "i"}, "jj", "<Esc>", { desc = "Return to normal mode" })
 
 -- TIP: Disable arrow keys in normal mode
 vim.keymap.set("n", "<left>", '<cmd>echo "Use h to move!!"<CR>')

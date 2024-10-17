@@ -51,6 +51,7 @@
           nil
           stylua
           luajitPackages.luacheck
+          glow
         ];
         shellHook = ''
           # symlink the .luarc.json generated in the overlay
