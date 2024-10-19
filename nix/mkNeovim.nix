@@ -3,16 +3,13 @@
   pkgs,
   lib,
   stdenv,
-  # Set by the overlay to ensure we use a compatible version of `wrapNeovimUnstable`
-  pkgs-wrapNeovim ? pkgs,
 }:
 with lib;
   {
     # NVIM_APPNAME - Defaults to 'nvim' if not set.
     # If set to something else, this will also rename the binary.
     appName ? null,
-    # The Neovim package to wrap
-    neovim-unwrapped ? pkgs-wrapNeovim.neovim-unwrapped,
+    neovim-unwrapped ? pkgs.neovim-unwrapped, # The neovim package to use.
     plugins ? [], # List of plugins
     # List of dev plugins (will be bootstrapped) - useful for plugin developers
     # { name = <plugin-name>; url = <git-url>; }
@@ -32,10 +29,9 @@ with lib;
     withSqlite ? true, # Add sqlite? This is a dependency for some plugins
     # You probably don't want to create vi or vim aliases
     # if the appName is something different than "nvim"
-    # Add a "vi" binary to the build output as an alias?
-    viAlias ? appName == null || appName == "nvim",
-    # Add a "vim" binary to the build output as an alias?
-    vimAlias ? appName == null || appName == "nvim",
+    viAlias ? appName == null || appName == "nvim", # Add a "vi" binary to the build output as an alias?
+    vimAlias ? appName == null || appName == "nvim", # Add a "vim" binary to the build output as an alias?
+    extraLuaConfig ? "", # Extra Lua configuration
   }: let
     # This is the structure of a plugin definition.
     # Each plugin in the `plugins` argument list can also be defined as this attrset
@@ -63,7 +59,7 @@ with lib;
 
     # This nixpkgs util function creates an attrset
     # that pkgs.wrapNeovimUnstable uses to configure the Neovim build.
-    neovimConfig = pkgs-wrapNeovim.neovimUtils.makeNeovimConfig {
+    neovimConfig = pkgs.neovimUtils.makeNeovimConfig {
       inherit extraPython3Packages withPython3 withRuby withNodeJs viAlias vimAlias;
       plugins = normalizedPlugins;
     };
@@ -101,11 +97,13 @@ with lib;
       installPhase = ''
         cp -r lua $out/lua
         rm -r lua
+
         # Copy nvim/after only if it exists
         if [ -d "after" ]; then
             cp -r after $out/after
             rm -r after
         fi
+
         # Copy rest of nvim/ subdirectories only if they exist
         if [ ! -z "$(ls -A)" ]; then
             cp -r -- * $out/nvim
@@ -113,10 +111,10 @@ with lib;
       '';
     };
 
-    # The final init.lua content that we pass to the Neovim wrapper.
-    # It wraps the user init.lua, prepends the lua lib directory to the RTP
-    # and prepends the nvim and after directory to the RTP
-    # It also adds logic for bootstrapping dev plugins (for plugin developers)
+    # The final init.lua content that we pass to the Neovim wrapper. It wraps
+    # the user init.lua, prepends the lua lib directory to the RTP and prepends
+    # the nvim and after directory to the RTP. It also adds logic for
+    # bootstrapping dev plugins (for plugin developers).
     initLua =
       ''
         vim.loader.enable()
@@ -145,13 +143,17 @@ with lib;
         devPlugins
       )
       # Prepend nvim and after directories to the runtimepath
-      # NOTE: This is done after init.lua,
-      # because of a bug in Neovim that can cause filetype plugins
-      # to be sourced prematurely, see https://github.com/neovim/neovim/issues/19008
-      # We prepend to ensure that user ftplugins are sourced before builtin ftplugins.
+      # NOTE: This is done after init.lua, because of a bug in Neovim that can
+      # cause filetype plugins to be sourced prematurely, see
+      # https://github.com/neovim/neovim/issues/19008. We prepend to ensure
+      # that user ftplugins are sourced before builtin ftplugins.
       + ''
         vim.opt.rtp:prepend('${nvimRtp}/nvim')
         vim.opt.rtp:prepend('${nvimRtp}/after')
+      ''
+      + ''
+        -- Extra lua config.
+        ${extraLuaConfig}
       '';
 
     # Add arguments to the Neovim wrapper script
@@ -170,21 +172,24 @@ with lib;
         ''--set LIBSQLITE "${pkgs.sqlite.out}/lib/libsqlite3.so"'')
     );
 
+    # See https://github.com/nix-community/home-manager/blob/master/modules/programs/neovim.nix
+    # and https://github.com/NixOS/nixpkgs/blob/623ac957cb99a5647c9cf127ed6b5b9edfbba087/pkgs/applications/editors/neovim/utils.nix#L81.
     luaPackages = neovim-unwrapped.lua.pkgs;
     resolvedExtraLuaPackages = extraLuaPackages luaPackages;
 
-    # Native Lua libraries
+    # Native Lua libraries.
     extraMakeWrapperLuaCArgs =
       optionalString (resolvedExtraLuaPackages != [])
       ''--suffix LUA_CPATH ";" "${concatMapStringsSep ";" luaPackages.getLuaCPath resolvedExtraLuaPackages}"'';
 
-    # Lua libraries
+    # Lua libraries.
     extraMakeWrapperLuaArgs =
       optionalString (resolvedExtraLuaPackages != [])
       ''--suffix LUA_PATH ";" "${concatMapStringsSep ";" luaPackages.getLuaPath resolvedExtraLuaPackages}"'';
 
     # wrapNeovimUnstable is the nixpkgs utility function for building a Neovim derivation.
-    neovim-wrapped = pkgs-wrapNeovim.wrapNeovimUnstable neovim-unwrapped (neovimConfig
+    neovim-wrapped = pkgs.wrapNeovimUnstable neovim-unwrapped (
+      neovimConfig
       // {
         luaRcContent = initLua;
         wrapperArgs =
@@ -196,7 +201,8 @@ with lib;
           + " "
           + extraMakeWrapperLuaArgs;
         wrapRc = true;
-      });
+      }
+    );
 
     isCustomAppName = appName != null && appName != "nvim";
   in
@@ -207,8 +213,8 @@ with lib;
         + lib.optionalString isCustomAppName ''
           mv $out/bin/nvim $out/bin/${lib.escapeShellArg appName}
         '';
-      meta.mainProgram 
-        = if isCustomAppName 
-            then appName 
-            else oa.meta.mainProgram;
+      meta.mainProgram =
+        if isCustomAppName
+        then appName
+        else oa.meta.mainProgram;
     })
