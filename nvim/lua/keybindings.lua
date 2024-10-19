@@ -51,6 +51,12 @@ vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Quick move to right buffer" })
 vim.api.nvim_set_keymap("n", "<C-d>", "<C-d>zz", { desc = "Scroll down from center", silent = true })
 vim.api.nvim_set_keymap("n", "<C-u>", "<C-u>zz", { desc = "Scroll up from center", silent = true })
 
+-- TIP: Disable arrow keys in normal mode
+vim.keymap.set("n", "<left>", '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set("n", "<right>", '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set("n", "<up>", '<cmd>echo "Use k to move!!"<CR>')
+vim.keymap.set("n", "<down>", '<cmd>echo "Use j to move!!"<CR>')
+
 -- Move blocks
 vim.api.nvim_set_keymap("v", "J", ":m '>+1<CR>gv=gv", { desc = "Move block down", silent = true })
 vim.api.nvim_set_keymap("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move block up", silent = true })
@@ -63,3 +69,6 @@ vim.keymap.set("n", "<leader>zc", "<cmd>tab close<cr>", { desc = "Close tab" })
 
 -- Format
 vim.keymap.set("v", "<leader>s", ":sort<cr>", { desc = "Sort lines", silent = true })
+
+-- Use `jj` to exit insert/visual mode
+vim.keymap.set({"v", "i"}, "jj", "<Esc>", { desc = "Return to normal mode" })

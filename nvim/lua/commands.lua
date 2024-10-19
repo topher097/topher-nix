@@ -2,6 +2,10 @@
 -- ==                               COMMANDS                               == --
 -- ========================================================================== --
 
+-- Native plugins
+vim.cmd.filetype('plugin', 'indent', 'on')
+vim.cmd.packadd('cfilter') -- Allows filtering the quickfix list with :cfdo
+
 -- Auto commands
 local augroup = vim.api.nvim_create_augroup("user_cmds", { clear = true })
 
