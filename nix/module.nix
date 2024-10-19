@@ -20,27 +20,27 @@
     };
   };
 
-#   validThemes = [
-#     "catppuccin"
-#     "everforest"
-#     "gruvbox"
-#     "gruvbox-light"
-#     "kanagawa"
-#     "melange"
-#     "melange-light"
-#     "nord"
-#     "rose-pine"
-#     "rose-pine-dawn"
-#   ];
+  validThemes = [
+    "catppuccin"
+    "everforest"
+    "gruvbox"
+    "gruvbox-light"
+    "kanagawa"
+    "melange"
+    "melange-light"
+    "nord"
+    "rose-pine"
+    "rose-pine-dawn"
+  ];
 in {
   options = {
     nvim-nix = {
       enable = lib.mkEnableOption "Enable nvim-nix";
-    #   theme = lib.mkOption {
-    #     type = lib.types.enum validThemes;
-    #     default = "gruvbox";
-    #     description = "The theme to use.";
-    #   };
+      theme = lib.mkOption {
+        type = lib.types.enum validThemes;
+        default = "gruvbox";
+        description = "The theme to use.";
+      };
       transparentBackground = lib.mkOption {
         type = lib.types.bool;
         default = false;

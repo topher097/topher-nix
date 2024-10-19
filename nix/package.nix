@@ -49,8 +49,6 @@ with lib; let
     # Gits.
     gitsigns-nvim
     vim-fugitive
-    neogit
-    diffview-nvim
 
     # LSPs.
     nvim-lspconfig
@@ -60,7 +58,6 @@ with lib; let
     outline-nvim
 
     # Miscs.
-    nvim-unception
     dial-nvim
     nvim-autopairs
     nvim-spider
@@ -69,12 +66,6 @@ with lib; let
     (mkNvimPlugin inputs.nvim-puppeteer "nvim-puppeteer")
     (mkNvimPlugin inputs.vim-characterize "vim-characterize")
     (mkNvimPlugin inputs.vim-kitty "vim-kitty")
-
-    # navigation/editing enhancement plugins
-    vim-unimpaired # predefined ] and [ navigation keymaps | https://github.com/tpope/vim-unimpaired/
-    eyeliner-nvim # Highlights unique characters for f/F and t/T motions | https://github.com/jinh0/eyeliner.nvim
-    nvim-surround # https://github.com/kylechui/nvim-surround/
-    nvim-ts-context-commentstring # https://github.com/joosepalviste/nvim-ts-context-commentstring/
 
     # Minizinc.
     (mkNvimPlugin inputs.vim-minizinc "vim-minizinc")
@@ -118,15 +109,12 @@ with lib; let
     alpha-nvim
     dressing-nvim
     lualine-nvim
-    nvim-navic
     which-key-nvim
     zen-mode-nvim
 
     # General dependencies.
     nvim-web-devicons
     plenary-nvim
-    sqlite-lua
-    vim-repeat
   ];
 
   # Extra packages for your plugins. I decided not to provide LSPs and other
@@ -167,8 +155,6 @@ in {
 
   # This can be symlinked in the devShell's shellHook.
   nvim-luarc-json = mk-luarc-json {
-    nvim = pkgs.neovim-nightly;
     plugins = all-plugins;
-    neodev-types = "nightly";
   };
 }
