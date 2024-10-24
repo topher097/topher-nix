@@ -2,7 +2,7 @@ require("nvim-treesitter.configs").setup({
 	modules = {},
 
 	-- All parsers are installed with nix.
-	ensure_installed = {},
+	ensure_installed = { },
 	sync_install = false,
 	auto_install = false,
 	ignore_install = {},
@@ -10,7 +10,11 @@ require("nvim-treesitter.configs").setup({
 	-- Highlight based on treesitter.
 	highlight = {
 		enable = true,
-		disable = { "latex" }, -- Handled by vimtex.
+		-- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+		additional_vim_regex_highlighting = false,
+
+		-- Highlighting for the following languages is disabled.
+		disable = { "latex", "just" }, -- Handled by vimtex.
 	},
 
 	-- Indentation based on treesitter (use `=` operator).
@@ -99,10 +103,10 @@ require("nvim-treesitter.configs").setup({
 	},
 })
 
-require("treesitter-context").setup({
-	enable = true,
-	max_lines = 1,
-})
+-- require("treesitter-context").setup({
+-- 	enable = true,
+-- 	max_lines = 1,
+-- })
 
 -- Use treesitter expressions for folds.
 vim.opt.foldmethod = "expr"

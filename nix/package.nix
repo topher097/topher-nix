@@ -86,9 +86,9 @@ with lib; let
     telescope-symbols-nvim
     (mkNvimPlugin inputs.telescope-helpgrep-nvim "telescope-helpgrep-nvim")
 
-    # Tex.
-    vimtex
-    (mkNvimPlugin inputs.cmp-vimtex "cmp-vimtex")
+    # # Tex.
+    # vimtex
+    # (mkNvimPlugin inputs.cmp-vimtex "cmp-vimtex")
 
     # Themes.
     catppuccin-nvim
@@ -123,7 +123,8 @@ with lib; let
   # See this debate for more: https://www.reddit.com/r/NixOS/comments/18oai2a/should_lsp_servers_be_in_the_project_flake/
   extraPackages = with pkgs; [
     ripgrep
-    # lua-language-server
+    fd    # For telescope.
+    nil   # Nix LSP
   ];
 
   extraLuaPackages = ps:

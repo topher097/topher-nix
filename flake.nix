@@ -99,10 +99,10 @@
         buildInputs = with pkgs; [
           # Tools for Lua and Nix development, useful for editing files in this repo.
           lua-language-server
+          nil   # Nix LSP
           nixd
           stylua
           luajitPackages.luacheck
-          just
         ];
         shellHook = ''
           ln -fs ${pkgs.nvim-luarc-json} .luarc.json
@@ -123,9 +123,9 @@
 
       # Or you can add this module in your home manager module, allowing you
       # to manually set the configuration.
-      nixosModules.default = import ./nix/module.nix {
-        inherit inputs;
-        neovim-unwrapped = nightly-package;
-      };
+      # nixosModules.default = import ./nix/module.nix {
+      #   inherit inputs;
+      #   neovim-unwrapped = nightly-package;
+      # };
     });
 }
