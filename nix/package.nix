@@ -123,8 +123,6 @@ with lib; let
   # See this debate for more: https://www.reddit.com/r/NixOS/comments/18oai2a/should_lsp_servers_be_in_the_project_flake/
   extraPackages = with pkgs; [
     ripgrep
-    fd    # For telescope.
-    nil   # Nix LSP
   ];
 
   extraLuaPackages = ps:
@@ -137,6 +135,9 @@ with lib; let
 
       # Nvim-spider's dependency to identify words with UTF-8 accents.
       luautf8
+      
+      # For telescope extra functionality
+      fd
     ];
 in {
   # This is the neovim derivation returned by the overlay.
